@@ -11,7 +11,8 @@ def count_even_odd_numbers(numbers):
     return even_count, odd_count
 
 def main():
-    numbers = [int(x) for x in input("Enter a series of numbers: ").split()]
+    # numbers = [int(x) for x in input("Enter a series of numbers: ").split()]
+    numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     even_count, odd_count = count_even_odd_numbers(numbers)
     print("Number of even numbers: ", even_count)
     print("Number of odd numbers: ", odd_count)

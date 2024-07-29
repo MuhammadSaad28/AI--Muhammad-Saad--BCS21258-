@@ -1,22 +1,21 @@
 from collections import deque
 
 def bfs_find_target(graph, start, target):
-    visited = set()
-    queue = deque([start])
-    visited.add(start)
+    explored = set()
+    frontier = deque([start])
     
-    while queue:
-        vertex = queue.popleft()
-        print(f"Visiting {vertex}")
+    while frontier:
+        node = frontier.popleft()
+        explored.add(node)
+        print(f"Visiting {node}")
         
-        if vertex == target:
+        if node == target:
             print(f"Found target {target}")
             return True
         
-        for neighbor in graph[vertex]:
-            if neighbor not in visited:
-                visited.add(neighbor)
-                queue.append(neighbor)
+        for neighbor in graph[node]:
+            if neighbor not in explored:
+                frontier.append(neighbor)
     
     print(f"Target {target} not found")
     return False
@@ -41,4 +40,4 @@ graph = {
 
 # Starting BFS from vertex 'A' to find 'L'
 print("BFS traversal to find 'L' starting from vertex 'A':")
-bfs_find_target(graph, 'A', 'Z')
+bfs_find_target(graph, 'A', 'G')
