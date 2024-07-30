@@ -6,12 +6,13 @@ def bfs_find_target(graph, start, target):
     
     while frontier:
         node = frontier.popleft()
-        explored.add(node)
         print(f"Visiting {node}")
         
         if node == target:
             print(f"Found target {target}")
             return True
+        
+        explored.add(node)
         
         for neighbor in graph[node]:
             if neighbor not in explored:
