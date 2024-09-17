@@ -1,82 +1,50 @@
-# Implement the 8 puzzle problem using a* search in python
-
 import heapq
 
-# Helper function to find the position of the empty space (0) in the puzzle
-def find_zero_position(state):
+# Heuristic: Misplaced tiles
+def misplaced_tiles(state, goal):
+    return sum(state[i][j] != goal[i][j] and state[i][j] != 0 for i in range(3) for j in range(3))
+
+# Find the 0 position (empty space)
+def find_zero(state):
     for i, row in enumerate(state):
         if 0 in row:
             return i, row.index(0)
 
-# Heuristic function: Number of misplaced tiles
-def misplaced_tiles(state, goal):
-    return sum(1 for i in range(3) for j in range(3) if state[i][j] != 0 and state[i][j] != goal[i][j])
-
-# Generate the neighbors of the current state
-def generate_neighbors(state):
+# Generate neighbors by swapping the empty space
+def get_neighbors(state):
     neighbors = []
-    x, y = find_zero_position(state)
-    directions = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
-    
-    for dx, dy in directions:
-        if 0 <= dx < 3 and 0 <= dy < 3:
-            # Copy the current state
+    x, y = find_zero(state)
+    for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
+        nx, ny = x + dx, y + dy
+        if 0 <= nx < 3 and 0 <= ny < 3:
             new_state = [row[:] for row in state]
-            # Swap the empty space with the neighboring tile
-            new_state[x][y], new_state[dx][dy] = new_state[dx][dy], new_state[x][y]
+            new_state[x][y], new_state[nx][ny] = new_state[nx][ny], new_state[x][y]
             neighbors.append(new_state)
-    
     return neighbors
 
-# A* Search function
+# A* search
 def a_star_search(start, goal):
-    priority_queue = []
-    heapq.heappush(priority_queue, (misplaced_tiles(start, goal), 0, start, []))
-    
+    pq = [(misplaced_tiles(start, goal), 0, start, [])]
     visited = set()
     
-    while priority_queue:
-        _, cost, current_state, path = heapq.heappop(priority_queue)
-        
-        # Add the current state to the path
-        path = path + [current_state]
-        
-        if current_state == goal:
-            print("Goal reached!")
-            print("Path:")
-            for step in path:
-                for row in step:
-                    print(row)
-                print()
-            print(f"Total Moves: {cost}")
-            return
-        
-        # Serialize state to make it hashable for the visited set
-        state_tuple = tuple(tuple(row) for row in current_state)
+    while pq:
+        _, cost, current, path = heapq.heappop(pq)
+        if current == goal:
+            return path + [current]
+        state_tuple = tuple(map(tuple, current))
         if state_tuple in visited:
             continue
-        
         visited.add(state_tuple)
-        
-        # Explore neighbors
-        for neighbor in generate_neighbors(current_state):
-            if tuple(tuple(row) for row in neighbor) not in visited:
-                total_cost = cost + 1
-                heapq.heappush(priority_queue, (total_cost + misplaced_tiles(neighbor, goal), total_cost, neighbor, path))
+        for neighbor in get_neighbors(current):
+            heapq.heappush(pq, (cost + 1 + misplaced_tiles(neighbor, goal), cost + 1, neighbor, path + [current]))
 
-# Initial state (can be customized)
-start_state = [
-    [1, 2, 3],
-    [4, 0, 5],
-    [7, 8, 6]
-]
+# Initial and goal states
+start = [[1, 2, 3], [4, 0, 5], [7, 8, 6]]
+goal = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
 
-# Goal state
-goal_state = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 0]
-]
-
-# Start the search
-a_star_search(start_state, goal_state)
+# Run the search and print the result
+solution = a_star_search(start, goal)
+for step in solution:
+    for row in step:
+        print(row)
+    print()
