@@ -40,14 +40,14 @@ heuristics = {
 
 def a_star_search(start, goal):
     # Priority queue with cost + heuristic as priority
-    priority_queue = []
-    heapq.heappush(priority_queue, (0 + heuristics[start], 0, start, []))
+    frontier = []
+    heapq.heappush(frontier, (0 + heuristics[start], 0, start, []))
     
-    visited = set()
+    explored = set()
     
-    while priority_queue:
+    while frontier:
         # Get the node with the lowest (cost + heuristic) value
-        _, cost, current_node, path = heapq.heappop(priority_queue)
+        _, cost, current_node, path = heapq.heappop(frontier)
         
         # Add the current node to the path
         path = path + [current_node]
@@ -60,13 +60,13 @@ def a_star_search(start, goal):
             print(f"Total Cost: {cost}")
             return
         
-        visited.add(current_node)
+        explored.add(current_node)
         
         # Explore neighbors
         for neighbor, step_cost in romania_map[current_node]:
-            if neighbor not in visited:
+            if neighbor not in explored:
                 total_cost = cost + step_cost
-                heapq.heappush(priority_queue, (total_cost + heuristics[neighbor], total_cost, neighbor, path))
+                heapq.heappush(frontier, (total_cost + heuristics[neighbor], total_cost, neighbor, path))
 
 # Start the search
 a_star_search('Arad', 'Bucharest')

@@ -1,8 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 data = np.loadtxt(r'C:\Users\Muhammad Saad\Desktop\AI (Muhammad Saad)(BCS21258)\Lab10\ex1data1.txt', delimiter=',')
-print(data)
+
+
 # Split data into x_train (Population) and y_train (Profit)
 x_train = data[:, 0]
 y_train = data[:, 1]

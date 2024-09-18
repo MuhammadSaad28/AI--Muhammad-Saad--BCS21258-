@@ -39,14 +39,14 @@ heuristics = {
 
 def greedy_best_first_search(start, goal):
     # Priority queue with heuristic as priority
-    priority_queue = []
-    heapq.heappush(priority_queue, (heuristics[start], start))
+    frontier = []
+    heapq.heappush(frontier, (heuristics[start], start))
     
-    visited = set()
+    explored = set()
     
-    while priority_queue:
+    while frontier:
         # Get the node with the lowest heuristic value
-        _, current_node = heapq.heappop(priority_queue)
+        _, current_node = heapq.heappop(frontier)
         
         print(f"Visiting: {current_node}")
         
@@ -54,12 +54,12 @@ def greedy_best_first_search(start, goal):
             print("Goal reached!")
             return
         
-        visited.add(current_node)
+        explored.add(current_node)
         
         # Explore neighbors
         for neighbor, _ in romania_map[current_node]:
-            if neighbor not in visited:
-                heapq.heappush(priority_queue, (heuristics[neighbor], neighbor))
+            if neighbor not in explored:
+                heapq.heappush(frontier, (heuristics[neighbor], neighbor))
 
 # Start the search
 greedy_best_first_search('Arad', 'Bucharest')
